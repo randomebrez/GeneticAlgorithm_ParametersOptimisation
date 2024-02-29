@@ -23,22 +23,25 @@ namespace GeneticAlgorithm.SimulationRun
             _simulations = new List<ISimulation>();
         }
 
-        public void RunSimulations()
+        public async Task RunSimulationsAsync()
         {
-            for (int i = 0; i < _parameters.SimulationNumberByParameters; i++)
+            await Task.Run(async () =>
             {
-                var simu = _builder.GetInstance();
-                simu.Run();
-                _simulations.Add(simu);
-            }
+                for (int i = 0; i < _parameters.SimulationNumberByParameters; i++)
+                {
+                    var simu = _builder.GetInstance();
+                    _simulations.Add(simu);
+                    await simu.RunAsync();
+                }
+            });
         }
 
-        public void StoreSimulationResults()
+        public async Task StoreSimulationResultsAsync()
         {
             var storagePath = _parameters.StoragePath;
             for (int i = 0; i < _simulations.Count; i++)
             {
-                var stringResults = _simulations[i].GetResult();
+                var stringResults = await _simulations[i].GetResultAsync();
                 var directory = Path.Combine(storagePath, $"Simulation_{i}");
                 if (Directory.Exists(directory) == false)
                     Directory.CreateDirectory(directory);
@@ -65,12 +68,12 @@ namespace GeneticAlgorithm.SimulationRun
             }
         }
 
-        public double EvaluateParameters()
+        public async Task<double> EvaluateParametersAsync()
         {
             var result = 0d;
             var n = _simulations.Count;
             for (int i = 0; i < n; i++)
-                result += _simulations[i].Evaluate();
+                result += await _simulations[i].EvaluateAsync();
             _score = result / n;
             return _score;
         }

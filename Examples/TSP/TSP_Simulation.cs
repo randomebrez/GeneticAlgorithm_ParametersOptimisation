@@ -62,26 +62,22 @@ namespace GeneticAlgorithm.Examples.TSP
             _agents = new List<Agent>();
         }
 
-        public void Run()
+        public async Task RunAsync()
         {
             var iterationNumber = 0;
             var stopCount = 0;
             while(iterationNumber < _simulationParameters.IterationNumber && stopCount < _simulationParameters.StopInARaw)
             {
                 var simulationResult = new IterationResult { IterationId = iterationNumber + 1 };
-                for (int i = 0; i < _simulationParameters.AgentNumber; i++)
-                {
-                    var agent = new Agent(_graph, _simulationParameters);
-                    agent.FindAWay();
-                    _agents.Add(agent);
-                    simulationResult = StoreAgentTry(simulationResult, agent.GetResult);
-                }
+                await RunAgentsAsync();
 
                 // Update graph
-                foreach(var agent in _agents)
+                foreach (var agent in _agents)
+                {
+                    simulationResult = StoreAgentTry(simulationResult, agent.GetResult);
                     _graph.UpdateGraph(agent, _simulationParameters.DropCoefficient, _simulationParameters.AgentNumber);
+                }
 
-                var p = _graph.Edges.First().Value;
                 _graph.Evaporate(_simulationParameters.EvaporationRate, _simulationParameters.AgentNumber, _simulationParameters.X_lim * _simulationParameters.Y_lim * 4);
 
                 _graphValues.AppendLine(_graph.EdgePheromoneDensityGet());
@@ -105,7 +101,21 @@ namespace GeneticAlgorithm.Examples.TSP
             _lastRun = lastAgent.PheromoneTrail();
         }
 
-        public Dictionary<string, string> GetResult()
+        private async Task RunAgentsAsync()
+        {
+            _agents = new List<Agent>();
+            List<Task> tasks = new List<Task>();
+            for (int i = 0; i < _simulationParameters.AgentNumber; i++)
+            {
+                var agent = new Agent(_graph, _simulationParameters);
+                _agents.Add(agent);
+                tasks.Add(agent.FindAWayAsync());
+            }
+
+            await Task.WhenAll(tasks);
+        }
+
+        public async Task<Dictionary<string, string>> GetResultAsync()
         {
             var result = new Dictionary<string, string>();
             var cityResult = _graph.CitiesStorageFormatGet();
@@ -130,7 +140,7 @@ namespace GeneticAlgorithm.Examples.TSP
             return result;
         }
 
-        public double Evaluate()
+        public Task<double> EvaluateAsync()
         {
             var last_average_mean = 0d;
             var last_min_average = 0d;
@@ -150,7 +160,7 @@ namespace GeneticAlgorithm.Examples.TSP
 
             // The smaller the better
             var percentage = (last_average_mean - last_min_average) / (last_max_average - last_min_average);
-            return 1d / (_iterationResults.Count * percentage);
+            return Task.FromResult(1d / (_iterationResults.Count * percentage));
         }
 
         private bool StopConditionCheck()

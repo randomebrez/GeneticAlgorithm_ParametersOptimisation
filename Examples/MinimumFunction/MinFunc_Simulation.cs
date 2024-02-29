@@ -1,10 +1,12 @@
 ﻿using GeneticAlgorithm.SimulationRun.Interfaces;
 using GeneticAlgorithm.SimulationRun.Parameters_DTO;
+
 namespace GeneticAlgorithm.Examples.MinimumFunction
 {
     internal class MinFunc_Simulation : ISimulationBuilder
     {
         private List<SearchableParameter> _parameters;
+
         public ISimulation GetInstance()
         {
             return new Simulation(_parameters);
@@ -16,7 +18,7 @@ namespace GeneticAlgorithm.Examples.MinimumFunction
         }
     }
 
-    internal class Simulation : ISimulation
+    public class Simulation : ISimulation
     {
         private Parameters _parameters;
         public Simulation(List<SearchableParameter> parameters)
@@ -24,21 +26,21 @@ namespace GeneticAlgorithm.Examples.MinimumFunction
             _parameters = new Parameters(parameters);
         }
 
-        public double Evaluate()
+        public Task<double> EvaluateAsync()
         {
-            return function(_parameters.x, _parameters.y);
+            return Task.FromResult(function(_parameters.x, _parameters.y));
         }
 
-        public Dictionary<string, string> GetResult()
+        public Task<Dictionary<string, string>> GetResultAsync()
         {
             var result = new Dictionary<string, string>();
-            result.Add("Score", $"{Evaluate()}");
-            return result;
+            result.Add("Score", $"{EvaluateAsync().GetAwaiter().GetResult()}");
+            return Task.FromResult(result);
         }
 
-        public void Run()
+        public Task RunAsync()
         {
-            return;
+            return Task.CompletedTask;
         }
 
         private double function(double x, double y)

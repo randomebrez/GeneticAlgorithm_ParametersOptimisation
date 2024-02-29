@@ -10,9 +10,10 @@ namespace GeneticAlgorithm.SimulationRun
         private GlobalParameters _globalParameters;
         private SimulationParameters_Manager _parametersManager;
         private ISimulationBuilder _simulationBuilder;
+        private List<ScoredGenome> _scoredGenomes = new List<ScoredGenome>();
 
 
-        public void ExploreSimulation(ISimulationBuilder simulationBuilder, string configFilePath)
+        public async Task ExploreSimulationAsync(ISimulationBuilder simulationBuilder, string configFilePath)
         {
             _simulationBuilder = simulationBuilder;
 
@@ -28,7 +29,7 @@ namespace GeneticAlgorithm.SimulationRun
             // If no genetic iteration required, execute a single environment then return
             if (geneticIteration == false)
             {
-                ExecuteSimulationEnvironment(currentSimulationEnvironments.First(), _globalParameters.StoragePath);
+                await ExecuteSimulationEnvironmentAsync(currentSimulationEnvironments.First(), _globalParameters.StoragePath);
                 return;
             }
 
@@ -36,46 +37,47 @@ namespace GeneticAlgorithm.SimulationRun
             for (int generationId = 0; generationId < _globalParameters.GeneticParameters.GenerationNumber; generationId++)
             {
                 // Run all simulation for all different config files (genomes)
-                var scoredGenomes = ExecuteALLSimulationEnvironments(currentSimulationEnvironments, generationId);
+                await ExecuteALLSimulationEnvironmentsAsync(currentSimulationEnvironments, generationId);
                 var average = 0d;
-                foreach (var scoredGenome in scoredGenomes)
+                foreach (var scoredGenome in _scoredGenomes)
                     average += scoredGenome.Score;
 
-                average /= scoredGenomes.Count;
+                average /= _scoredGenomes.Count;
                 Console.WriteLine($"Iteration : {generationId} - Score {Math.Round(average, 4)}");
 
                 // Get next generation
-                currentSimulationEnvironments = _parametersManager.NextGenerationGet(scoredGenomes);
+                currentSimulationEnvironments = _parametersManager.NextGenerationGet(_scoredGenomes);
+
+                _scoredGenomes.Clear();
             }
         }
 
-        private List<ScoredGenome> ExecuteALLSimulationEnvironments(List<SimulationEnvironment> simulationEnvironments, int generation)
+        private async Task ExecuteALLSimulationEnvironmentsAsync(List<SimulationEnvironment> simulationEnvironments, int generation)
         {
-            var scoredGenomes = new List<ScoredGenome>();
-
-            // Create directory to store results of that generation
-            var sub_directory = Path.Combine(simulationEnvironments[0].Parameters.StoragePath, $"GeneticIteration_{generation}");
-            if (Directory.Exists(sub_directory) == false)
-                Directory.CreateDirectory(sub_directory);
-
-            // For each different config file built from genomes
-            for (int j = 0; j < simulationEnvironments.Count; j++)
+            await Task.Run(async () =>
             {
-                var scoredGenome = ExecuteSimulationEnvironment(simulationEnvironments[j], sub_directory);
+                // Create directory to store results of that generation
+                var sub_directory = Path.Combine(simulationEnvironments[0].Parameters.StoragePath, $"GeneticIteration_{generation}");
+                if (Directory.Exists(sub_directory) == false)
+                    Directory.CreateDirectory(sub_directory);
 
-                scoredGenomes.Add(scoredGenome);
-            }
+                // For each different config file built from genomes
+                List<Task> simulationResults = new List<Task>();
+                for (int j = 0; j < simulationEnvironments.Count; j++)
+                    simulationResults.Add(ExecuteSimulationEnvironmentAsync(simulationEnvironments[j], sub_directory));
 
-            return scoredGenomes;
+                await Task.WhenAll(simulationResults);
+            });
         }
 
-        private ScoredGenome ExecuteSimulationEnvironment(SimulationEnvironment simulationEnvironment, string subDirectory = "")
+        private async Task ExecuteSimulationEnvironmentAsync(SimulationEnvironment simulationEnvironment, string subDirectory = "")
         {
+            Console.WriteLine($"Executin simuEnvironment {simulationEnvironment.Id}");
             // Class that handle multiple simulations with a single config file
             var simuManager = new Simulation_Runner(_simulationBuilder, simulationEnvironment.Parameters);
 
             // Run the simulations
-            simuManager.RunSimulations();
+            await simuManager.RunSimulationsAsync();
 
             // Store results if subDirectory parameter is filled
             if (string.IsNullOrEmpty(subDirectory) == false)
@@ -83,17 +85,17 @@ namespace GeneticAlgorithm.SimulationRun
                 // Add subfolder to store results of simulation with that set of parameters
                 simulationEnvironment.Parameters.StoragePath = Path.Combine(subDirectory, $"ParametersConfig_{simulationEnvironment.Id}");
                 // Store results
-                simuManager.StoreSimulationResults();
+                await simuManager.StoreSimulationResultsAsync();
             }
 
             // Evaluate parameters
-            var score = simuManager.EvaluateParameters();
+            var score = await simuManager.EvaluateParametersAsync();
 
-            return new ScoredGenome
+            _scoredGenomes.Add(new ScoredGenome
             {
                 Genome = simulationEnvironment.Genome,
                 Score = score
-            };
+            });
         }
 
 

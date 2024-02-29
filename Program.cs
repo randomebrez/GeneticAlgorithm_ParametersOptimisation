@@ -18,7 +18,7 @@ namespace GeneticAlgorithm
             //var configFilePath = @"D:\Codes\VisualStudio\GeneticAlgorithm\MinFunc.config";
 
             var exploManager = new GeneticExplorationManager();
-            exploManager.ExploreSimulation(new TSP_Simulation(), configFilePath);
+            exploManager.ExploreSimulationAsync(new TSP_Simulation(), configFilePath).GetAwaiter().GetResult();
             //exploManager.ExploreSimulation(new MinFunc_Simulation(), configFilePath);
         }
     }

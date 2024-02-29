@@ -2,10 +2,10 @@
 {
     public interface ISimulation
     {
-        void Run();
+        Task RunAsync();
 
-        Dictionary<string, string> GetResult();
+        Task<Dictionary<string, string>> GetResultAsync();
 
-        double Evaluate();
+        Task<double> EvaluateAsync();
     }
 }

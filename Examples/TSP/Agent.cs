@@ -24,39 +24,42 @@ namespace GeneticAlgorithm.Examples.TSP
 
         public AgentReport GetResult => _results;
 
-        public void FindAWay()
+        public async Task FindAWayAsync()
         {
-            var current_path = new List<City>();
-            var toVisit = _graph.Cities.ToList();
-
-            var stringPath = new StringBuilder();
-            var totalLength = 0d;
-
-            var currentPosition = GetStartingPosition();
-            current_path.Add(currentPosition);
-            stringPath.Append($"{currentPosition.Name};");
-            toVisit.Remove(currentPosition);
-
-            while (toVisit.Count > 0)
+            await Task.Run(() =>
             {
-                var probabilities = ComputeProbabilities(currentPosition, toVisit);
-                var nextPosition = Draw(toVisit, probabilities);
+                var current_path = new List<City>();
+                var toVisit = _graph.Cities.ToList();
 
-                current_path.Add(nextPosition);
-                stringPath.Append($"{nextPosition.Name};");
-                toVisit.Remove(nextPosition);
+                var stringPath = new StringBuilder();
+                var totalLength = 0d;
 
-                totalLength += _graph.GetDistanceBetween(currentPosition, nextPosition);
+                var currentPosition = GetStartingPosition();
+                current_path.Add(currentPosition);
+                stringPath.Append($"{currentPosition.Name};");
+                toVisit.Remove(currentPosition);
 
-                currentPosition = nextPosition;
-            }
+                while (toVisit.Count > 0)
+                {
+                    var probabilities = ComputeProbabilities(currentPosition, toVisit);
+                    var nextPosition = Draw(toVisit, probabilities);
 
-            // Add first one to make a loop
-            current_path.Add(current_path.First());
-            stringPath.Append($"{current_path.First().Name};");
-            totalLength += _graph.GetDistanceBetween(currentPosition, current_path.First());
+                    current_path.Add(nextPosition);
+                    stringPath.Append($"{nextPosition.Name};");
+                    toVisit.Remove(nextPosition);
 
-            _results = new AgentReport { Path = current_path, StringPath = stringPath.ToString(), TotalLength = totalLength };
+                    totalLength += _graph.GetDistanceBetween(currentPosition, nextPosition);
+
+                    currentPosition = nextPosition;
+                }
+
+                // Add first one to make a loop
+                current_path.Add(current_path.First());
+                stringPath.Append($"{current_path.First().Name};");
+                totalLength += _graph.GetDistanceBetween(currentPosition, current_path.First());
+
+                _results = new AgentReport { Path = current_path, StringPath = stringPath.ToString(), TotalLength = totalLength };
+            });
         }
 
         public AgentReport PheromoneTrail()
