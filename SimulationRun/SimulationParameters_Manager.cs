@@ -1,7 +1,6 @@
 ﻿using GeneticAlgorithm.Genomic;
 using GeneticAlgorithm.Genomic.Model;
 using GeneticAlgorithm.SimulationRun.Parameters_DTO;
-using static GeneticAlgorithm.Genomic.GeneticAlgorithmTest;
 
 namespace GeneticAlgorithm.SimulationRun
 {
@@ -10,6 +9,8 @@ namespace GeneticAlgorithm.SimulationRun
         public int Id { get; set; }
         public Genome Genome { get; set; }
         public GlobalParameters Parameters { get; set; }
+
+        public double Score { get; set; }
     }
 
     public class SimulationParameters_Manager
@@ -45,11 +46,12 @@ namespace GeneticAlgorithm.SimulationRun
             return (needGenomes.Required, simulationEnvironments);
         }
 
-        public List<SimulationEnvironment> NextGenerationGet(List<ScoredGenome> scoredGenomes)
+        public List<SimulationEnvironment> NextGenerationGet(List<SimulationEnvironment> simulationEnvironments)
         {
             // Generate next genomes generation
-            scoredGenomes = scoredGenomes.OrderByDescending(t => t.Score).Take(_globalParameters.GeneticParameters.ParentGenomeNumber).ToList();
-            var nextGenomes = _genomeManager.ReproduceFromGenome(scoredGenomes.Select(t => t.Genome).ToList(), _globalParameters.GeneticParameters.MutationRate);
+            simulationEnvironments = simulationEnvironments.OrderByDescending(t => t.Score)
+                .Take(_globalParameters.GeneticParameters.ParentGenomeNumber).ToList();
+            var nextGenomes = _genomeManager.ReproduceFromGenome(simulationEnvironments.Select(t => t.Genome).ToList(), _globalParameters.GeneticParameters.MutationRate);
 
             // Translate them to 
             return SimulationEnvironmentsFromGenomes(nextGenomes).ToList();

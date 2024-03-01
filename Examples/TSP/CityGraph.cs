@@ -68,8 +68,8 @@ namespace GeneticAlgorithm.Examples.TSP
                 var otherCity = path[i + 1];
                 var edgeName_1 = EdgeNameGet(firstCity, otherCity);
                 var edgeName_2 = EdgeNameGet(otherCity, firstCity);
-                Edges[edgeName_1].P_Density += Math.Pow(1d / (agentNumber * agent.GetResult.TotalLength), powerCoefficient);
-                Edges[edgeName_2].P_Density += Math.Pow(1d / (agentNumber * agent.GetResult.TotalLength), powerCoefficient);
+                Edges[edgeName_1].P_Density += Math.Pow(1d / agent.GetResult.TotalLength, powerCoefficient);
+                Edges[edgeName_2].P_Density += Math.Pow(1d / agent.GetResult.TotalLength, powerCoefficient);
                 firstCity = path[i + 1];
             }
         }

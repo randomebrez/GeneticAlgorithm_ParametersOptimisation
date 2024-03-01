@@ -160,7 +160,7 @@ namespace GeneticAlgorithm.Examples.TSP
 
             // The smaller the better
             var percentage = (last_average_mean - last_min_average) / (last_max_average - last_min_average);
-            return Task.FromResult(1d / (_iterationResults.Count * percentage));
+            return Task.FromResult(100d / (percentage + 0.01f));
         }
 
         private bool StopConditionCheck()

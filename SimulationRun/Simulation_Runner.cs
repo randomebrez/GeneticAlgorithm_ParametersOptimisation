@@ -25,15 +25,15 @@ namespace GeneticAlgorithm.SimulationRun
 
         public async Task RunSimulationsAsync()
         {
-            await Task.Run(async () =>
+            List<Task> tasks = new List<Task>();
+            for (int i = 0; i < _parameters.SimulationNumberByParameters; i++)
             {
-                for (int i = 0; i < _parameters.SimulationNumberByParameters; i++)
-                {
-                    var simu = _builder.GetInstance();
-                    _simulations.Add(simu);
-                    await simu.RunAsync();
-                }
-            });
+                var simu = _builder.GetInstance();
+                tasks.Add(simu.RunAsync());
+                _simulations.Add(simu);
+            }
+
+            await Task.WhenAll(tasks);
         }
 
         public async Task StoreSimulationResultsAsync()

@@ -1,41 +1,50 @@
 {
-    "SimulationNumberByParameters": "2",
+    "GeneticParameters": {
+        "GenerationNumber": "40",
+        "GenomeNumber": "20",
+        "MutationRate": "0.05",
+        "ParentGenomeNumber": "10"
+    },
+    "SimulationNumberByParameters": "1",
     "SimulationParameters": [
         {
             "BitNumber": "10",
-            "MaxValue": "2",
+            "MaxValue": "3",
             "MinValue": "1",
-			"Value": "2",
             "Name": "AlphaCoefficient",
-            "Search": "false"
+            "Search": "true",
+            "Value": "1.5"
         },
         {
             "BitNumber": "10",
-            "MaxValue": "1",
+            "MaxValue": "1.5",
             "MinValue": "0.1",
-			"Value": "0.6",
             "Name": "BetaCoefficient",
-            "Search": "false"
+            "Search": "true"
         },
         {
-			"Value": "0.1",
+            "BitNumber": "10",
+            "MaxValue": "0.5",
+            "MinValue": "0.01",
             "Name": "EvaporationRate",
-            "Search": "false"
+            "Search": "true"
         },
         {
-            "Value": "1",
+            "BitNumber": "10",
+            "MaxValue": "1.5",
+            "MinValue": "0.5",
             "Name": "DropCoefficient",
-            "Search": "false"
+            "Search": "true"
         },
         {
             "Name": "StopConditionThreshold",
             "Search": "false",
-            "Value": "0.001"
+            "Value": "0.00001"
         },
         {
             "Name": "StopInARaw",
             "Search": "false",
-            "Value": "20"
+            "Value": "10"
         },
         {
             "Name": "CityNumber",
@@ -43,14 +52,17 @@
             "Value": "30"
         },
         {
+			"BitNumber": "10",
             "Name": "AgentNumber",
-            "Search": "false",
-            "Value": "500"
+            "Search": "true",
+            "MinValue": "50",
+            "MaxValue": "300",
+            "Value": "150"
         },
         {
             "Name": "IterationNumber",
             "Search": "false",
-            "Value": "250"
+            "Value": "200"
         },
         {
             "Name": "X_lim",

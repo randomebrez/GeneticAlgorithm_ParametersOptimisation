@@ -1,5 +1,4 @@
-﻿using GeneticAlgorithm.Examples.MinimumFunction;
-using GeneticAlgorithm.Examples.TSP;
+﻿using GeneticAlgorithm.Examples.TSP;
 using GeneticAlgorithm.SimulationRun;
 
 namespace GeneticAlgorithm
@@ -13,13 +12,12 @@ namespace GeneticAlgorithm
             //test_GA.TestGeneticAlgorithm();
 
             // Test TSP
-            //var configFilePath = @"D:\Codes\VisualStudio\GeneticAlgorithm\no_genome.config";
-            var configFilePath = @"D:\Codes\VisualStudio\GeneticAlgorithm\test.config";
-            //var configFilePath = @"D:\Codes\VisualStudio\GeneticAlgorithm\MinFunc.config";
+            var configFilePath = @"D:\Codes\VisualStudio\GeneticAlgorithm\ConfigFiles\no_genome_config.json";
+            //var configFilePath = @"D:\Codes\VisualStudio\GeneticAlgorithm\ConfigFiles\test_config.json";
+            //var configFilePath = @"D:\Codes\VisualStudio\GeneticAlgorithm\ConfigFiles\functionnal_config.json";
 
             var exploManager = new GeneticExplorationManager();
             exploManager.ExploreSimulationAsync(new TSP_Simulation(), configFilePath).GetAwaiter().GetResult();
-            //exploManager.ExploreSimulation(new MinFunc_Simulation(), configFilePath);
         }
     }
 }

@@ -1,40 +1,25 @@
 {
-    "GeneticParameters": {
-        "GenerationNumber": "20",
-        "GenomeNumber": "5",
-        "MutationRate": "0.1",
-        "ParentGenomeNumber": "6"
-    },
-    "SimulationNumberByParameters": "1",
+    "SimulationNumberByParameters": "10",
     "SimulationParameters": [
         {
-            "BitNumber": "10",
-            "MaxValue": "2.2",
-            "MinValue": "1.8",
+            "Value": "2.5",
             "Name": "AlphaCoefficient",
-            "Search": "true",
-            "Value": "1.5"
+            "Search": "false"
         },
         {
-            "BitNumber": "10",
-            "MaxValue": "0.7",
-            "MinValue": "0.4",
+            "Value": "1.42",
             "Name": "BetaCoefficient",
-            "Search": "true"
+            "Search": "false"
         },
         {
-            "BitNumber": "10",
-            "MaxValue": "0.2",
-            "MinValue": "0.01",
+			"Value": "0.08",
             "Name": "EvaporationRate",
-            "Search": "true"
+            "Search": "false"
         },
         {
-            "BitNumber": "10",
-            "MaxValue": "1.2",
-            "MinValue": "0.8",
+            "Value": "0.57",
             "Name": "DropCoefficient",
-            "Search": "true"
+            "Search": "false"
         },
         {
             "Name": "StopConditionThreshold",
@@ -44,7 +29,7 @@
         {
             "Name": "StopInARaw",
             "Search": "false",
-            "Value": "10"
+            "Value": "20"
         },
         {
             "Name": "CityNumber",
@@ -54,7 +39,7 @@
         {
             "Name": "AgentNumber",
             "Search": "false",
-            "Value": "150"
+            "Value": "300"
         },
         {
             "Name": "IterationNumber",

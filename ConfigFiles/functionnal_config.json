@@ -1,0 +1,100 @@
+{
+    "GeneticParameters": {
+        "GenerationNumber": 20,
+        "GenomeNumber": 20,
+        "MutationRate": 0.05,
+        "ParentGenomeNumber": 10
+    },
+    "SimulationNumberByParameters": 5,
+    "SimulationParameters": [
+        {
+            "BitNumber": 10,
+            "MaxValue": 3.0,
+            "MinValue": 1.0,
+            "Name": "AlphaCoefficient",
+            "Search": false,
+            "Value": 2.56207233626588
+        },
+        {
+            "BitNumber": 10,
+            "MaxValue": 1.5,
+            "MinValue": 0.1,
+            "Name": "BetaCoefficient",
+            "Search": false,
+            "Value": 1.41652003910068
+        },
+        {
+            "BitNumber": 10,
+            "MaxValue": 0.5,
+            "MinValue": 0.01,
+            "Name": "EvaporationRate",
+            "Search": false,
+            "Value": 0.172375366568915
+        },
+        {
+            "BitNumber": 10,
+            "MaxValue": 1.5,
+            "MinValue": 0.5,
+            "Name": "DropCoefficient",
+            "Search": false,
+            "Value": 0.665200391006843
+        },
+        {
+            "BitNumber": 0,
+            "MaxValue": 0.0,
+            "MinValue": 0.0,
+            "Name": "StopConditionThreshold",
+            "Search": false,
+            "Value": 1E-05
+        },
+        {
+            "BitNumber": 0,
+            "MaxValue": 0.0,
+            "MinValue": 0.0,
+            "Name": "StopInARaw",
+            "Search": false,
+            "Value": 10.0
+        },
+        {
+            "BitNumber": 0,
+            "MaxValue": 0.0,
+            "MinValue": 0.0,
+            "Name": "CityNumber",
+            "Search": false,
+            "Value": 15.0
+        },
+        {
+            "BitNumber": 0,
+            "MaxValue": 0.0,
+            "MinValue": 0.0,
+            "Name": "AgentNumber",
+            "Search": false,
+            "Value": 150.0
+        },
+        {
+            "BitNumber": 0,
+            "MaxValue": 0.0,
+            "MinValue": 0.0,
+            "Name": "IterationNumber",
+            "Search": false,
+            "Value": 200.0
+        },
+        {
+            "BitNumber": 0,
+            "MaxValue": 0.0,
+            "MinValue": 0.0,
+            "Name": "X_lim",
+            "Search": false,
+            "Value": 30.0
+        },
+        {
+            "BitNumber": 0,
+            "MaxValue": 0.0,
+            "MinValue": 0.0,
+            "Name": "Y_lim",
+            "Search": false,
+            "Value": 30.0
+        }
+    ],
+    "StoragePath": "D:\\Codes\\VisualStudio\\GeneticAlgorithm\\Save\\"
+}
