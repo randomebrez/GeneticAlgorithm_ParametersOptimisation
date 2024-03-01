@@ -24,12 +24,13 @@ namespace GeneticAlgorithm.SimulationRun
             _parametersManager = new SimulationParameters_Manager(_globalParameters);
 
             // Build configuration file with exploratory parameters' value set. If no genome is required return a list of a single element with null genome
-            var (geneticIteration, currentSimulationEnvironments) = _parametersManager.SimulationEnvironmentsFromParameters();
+            var (geneticIteration, currentSimulationEnvironments) = await _parametersManager.SimulationEnvironmentsFromParametersAsync();
 
+            _simulationEnvironments = currentSimulationEnvironments;
             // If no genetic iteration required, execute a single environment then return
             if (geneticIteration == false)
             {
-                await ExecuteSimulationEnvironmentAsync(currentSimulationEnvironments.First(), _globalParameters.StoragePath);
+                await ExecuteSimulationEnvironmentAsync(0, _globalParameters.StoragePath);
                 return;
             }
 
@@ -39,7 +40,7 @@ namespace GeneticAlgorithm.SimulationRun
                 var start = DateTime.UtcNow;
 
                 // Run all simulation for all different config files (genomes)
-                await ExecuteALLSimulationEnvironmentsAsync(currentSimulationEnvironments, generationId);
+                await ExecuteALLSimulationEnvironmentsAsync(generationId);
 
                 var average = 0d;
                 foreach (var simulationEnvironment in _simulationEnvironments)
@@ -55,32 +56,33 @@ namespace GeneticAlgorithm.SimulationRun
                 Console.WriteLine($"BestGenome ==> {_bestGenomeEver.config} - Score: {_bestGenomeEver.score}");
 
                 // Get next generation
-                currentSimulationEnvironments = _parametersManager.NextGenerationGet(_simulationEnvironments);
+                _simulationEnvironments = _parametersManager.NextGenerationGet(_simulationEnvironments);
 
-                _simulationEnvironments.Clear();
                 var tick = DateTime.UtcNow;
                 var delta = tick - start;
                 Console.WriteLine($"Execution time : {delta.Minutes}:{delta.Seconds}");
             }
         }
 
-        private async Task ExecuteALLSimulationEnvironmentsAsync(List<SimulationEnvironment> simulationEnvironments, int generation)
+        private async Task ExecuteALLSimulationEnvironmentsAsync(int generation)
         {
             // Create directory to store results of that generation
-            var sub_directory = Path.Combine(simulationEnvironments[0].Parameters.StoragePath, $"GeneticIteration_{generation}");
+            var sub_directory = Path.Combine(_simulationEnvironments[0].Parameters.StoragePath, $"GeneticIteration_{generation}");
             if (Directory.Exists(sub_directory) == false)
                 Directory.CreateDirectory(sub_directory);
 
             // For each different config file built from genomes
             List<Task> simulationResults = new List<Task>();
-            for (int j = 0; j < simulationEnvironments.Count; j++)
-                simulationResults.Add(ExecuteSimulationEnvironmentAsync(simulationEnvironments[j], sub_directory));
+            for (int j = 0; j < _simulationEnvironments.Count; j++)
+                simulationResults.Add(ExecuteSimulationEnvironmentAsync(j, sub_directory));
 
             await Task.WhenAll(simulationResults);
         }
 
-        private async Task ExecuteSimulationEnvironmentAsync(SimulationEnvironment simulationEnvironment, string subDirectory = "")
+        private async Task ExecuteSimulationEnvironmentAsync(int index, string subDirectory = "")
         {
+            var simulationEnvironment = _simulationEnvironments[index];
+
             // Class that handle multiple simulations with a single config file
             var simuManager = new Simulation_Runner(_simulationBuilder, simulationEnvironment.Parameters);
 

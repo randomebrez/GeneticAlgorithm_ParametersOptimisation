@@ -4,7 +4,7 @@ using GeneticAlgorithm.SimulationRun.Parameters_DTO;
 
 namespace GeneticAlgorithm.SimulationRun
 {
-    public struct SimulationEnvironment
+    public class SimulationEnvironment
     {
         public int Id { get; set; }
         public Genome Genome { get; set; }
@@ -23,7 +23,7 @@ namespace GeneticAlgorithm.SimulationRun
             _globalParameters = parameters;
         }
 
-        public (bool GeneticIteration, List<SimulationEnvironment> SimulationEnvironments) SimulationEnvironmentsFromParameters()
+        public async Task<(bool GeneticIteration, List<SimulationEnvironment> SimulationEnvironments)> SimulationEnvironmentsFromParametersAsync()
         {
             var simulationEnvironments = new List<SimulationEnvironment>();
             var needGenomes = IsGenomeNeeded();
@@ -38,9 +38,12 @@ namespace GeneticAlgorithm.SimulationRun
             }
             else
             {
-                var parametersToExplore = needGenomes.ParametersToExplore.Select(t => ToGeneticParameter(t));
-                var genomes = _genomeManager.RandomGenomesGet(_globalParameters.GeneticParameters.GenomeNumber, parametersToExplore.ToList());
-                simulationEnvironments = SimulationEnvironmentsFromGenomes(genomes);
+                await Task.Run(() =>
+                {
+                    var parametersToExplore = needGenomes.ParametersToExplore.Select(t => ToGeneticParameter(t));
+                    var genomes = _genomeManager.RandomGenomesGet(_globalParameters.GeneticParameters.GenomeNumber, parametersToExplore.ToList());
+                    simulationEnvironments = SimulationEnvironmentsFromGenomes(genomes);
+                });
             }
 
             return (needGenomes.Required, simulationEnvironments);
