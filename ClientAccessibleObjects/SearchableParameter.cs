@@ -1,4 +1,4 @@
-﻿namespace GeneticAlgorithm.SimulationRun.Parameters_DTO
+﻿namespace GeneticAlgorithm.ClientAccessibleObjects
 {
     public class SearchableParameter
     {

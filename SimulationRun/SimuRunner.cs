@@ -1,11 +1,11 @@
-﻿using GeneticAlgorithm.SimulationRun.Interfaces;
-using GeneticAlgorithm.SimulationRun.Parameters_DTO;
+﻿using GeneticAlgorithm.ClientAccessibleObjects;
+using GeneticAlgorithm.SimulationRun.Model;
 using Newtonsoft.Json;
 using System.Text;
 
 namespace GeneticAlgorithm.SimulationRun
 {
-    public class Simulation_Runner
+    public class SimuRunner
     {
         private ISimulationBuilder _simulationBuilder;
         private GlobalParameters _parameters;
@@ -13,7 +13,7 @@ namespace GeneticAlgorithm.SimulationRun
 
         private double _score;
 
-        public Simulation_Runner(ISimulationBuilder builder, GlobalParameters parameters) 
+        public SimuRunner(ISimulationBuilder builder, GlobalParameters parameters) 
         {
             _simulationBuilder = builder;
             _parameters = parameters;
@@ -26,7 +26,7 @@ namespace GeneticAlgorithm.SimulationRun
             List<Task> tasks = new List<Task>();
             for (int i = 0; i < _parameters.SimulationNumberByParameters; i++)
             {
-                var simu = _simulationBuilder.GetSimulationInstance(_parameters.SimulationParameters);
+                var simu = _simulationBuilder.GetSimulationInstance(_parameters.SimulationParametersDict());
                 tasks.Add(simu.RunAsync());
                 _simulations.Add(simu);
             }
@@ -79,7 +79,7 @@ namespace GeneticAlgorithm.SimulationRun
         public string GetStringResult()
         {
             var text = new StringBuilder($"Score {_score}\n");
-            foreach(var parameter in _parameters.SimulationParameters.Where(t => t.Search))
+            foreach(var parameter in _parameters.SimulationParametersList.Where(t => t.Search))
                 text.Append($"{parameter.Name} : {parameter.Value} - ");
 
             return text.ToString();

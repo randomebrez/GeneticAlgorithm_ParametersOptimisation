@@ -1,24 +1,24 @@
-﻿using GeneticAlgorithm.SimulationRun.Parameters_DTO;
+﻿using GeneticAlgorithm.ClientAccessibleObjects;
 
 namespace GeneticAlgorithm.Examples.TSP
 {
     public class TSP_Parameters
     {
-        public TSP_Parameters(List<SearchableParameter> parameters)
+        public TSP_Parameters(Dictionary<string, SearchableParameter> parameters)
         {
-            AlphaCoefficient = parameters.First(t => t.Name == "AlphaCoefficient").Value;
-            BetaCoefficient = parameters.First(t => t.Name == "BetaCoefficient").Value;
-            EvaporationRate = parameters.First(t => t.Name == "EvaporationRate").Value;
-            DropCoefficient = parameters.First(t => t.Name == "DropCoefficient").Value;
+            AlphaCoefficient = parameters["AlphaCoefficient"].Value;
+            BetaCoefficient = parameters["BetaCoefficient"].Value;
+            EvaporationRate = parameters["EvaporationRate"].Value;
+            DropCoefficient = parameters["DropCoefficient"].Value;
 
-            CityNumber = (int)parameters.First(t => t.Name == "CityNumber").Value;
-            X_lim = parameters.First(t => t.Name == "X_lim").Value;
-            Y_lim = parameters.First(t => t.Name == "Y_lim").Value;
+            CityNumber = (int)parameters["CityNumber"].Value;
+            X_lim = parameters["X_lim"].Value;
+            Y_lim = parameters["Y_lim"].Value;
 
-            AgentNumber = (int)parameters.First(t => t.Name == "AgentNumber").Value;
-            IterationNumber = (int)parameters.First(t => t.Name == "IterationNumber").Value;
-            StopConditionThreshold = parameters.First(t => t.Name == "StopConditionThreshold").Value;
-            StopInARaw = (int)parameters.First(t => t.Name == "StopInARaw").Value;
+            AgentNumber = (int)parameters["AgentNumber"].Value;
+            IterationNumber = (int)parameters["IterationNumber"].Value;
+            StopConditionThreshold = parameters["StopConditionThreshold"].Value;
+            StopInARaw = (int)parameters["StopInARaw"].Value;
         }
 
         public double AlphaCoefficient { get; }

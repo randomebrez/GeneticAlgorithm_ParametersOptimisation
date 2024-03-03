@@ -1,14 +1,14 @@
-﻿using GeneticAlgorithm.SimulationRun.Interfaces;
-using GeneticAlgorithm.SimulationRun.Parameters_DTO;
+﻿using GeneticAlgorithm.SimulationRun;
+using GeneticAlgorithm.SimulationRun.Model;
 using Newtonsoft.Json;
 
-namespace GeneticAlgorithm.SimulationRun
+namespace GeneticAlgorithm.ClientAccessibleObjects
 {
-    public class GeneticExplorationManager<T> where T : SimulationBase, new()
+    public class GeneticExplorationManager<T> where T : ISimulation, new()
     {
         private GlobalParameters _globalParameters;
-        private SimulationParameters_Manager _parametersManager;
-        private SimulationBuilder<T> _simulationBuilder;
+        private SimuParamManager _parametersManager;
+        private SimuBuilder<T> _simulationBuilder;
         private List<SimulationEnvironment> _simulationEnvironments = new List<SimulationEnvironment>();
         private (double score, string config) _bestGenomeEver = (0d, string.Empty);
 
@@ -16,13 +16,13 @@ namespace GeneticAlgorithm.SimulationRun
         public async Task ExploreSimulationAsync(string configFilePath)
         {
 
-            _simulationBuilder = new SimulationBuilder<T>();
+            _simulationBuilder = new SimuBuilder<T>();
 
             // Map config file
             _globalParameters = ReadConfigFile(configFilePath);
 
             // Initialize ParameterManager
-            _parametersManager = new SimulationParameters_Manager(_globalParameters);
+            _parametersManager = new SimuParamManager(_globalParameters);
 
             // Build configuration file with exploratory parameters' value set. If no genome is required return a list of a single element with null genome
             var (geneticIteration, currentSimulationEnvironments) = await _parametersManager.SimulationEnvironmentsFromParametersAsync();
@@ -85,7 +85,7 @@ namespace GeneticAlgorithm.SimulationRun
             var simulationEnvironment = _simulationEnvironments[index];
 
             // Class that handle multiple simulations with a single config file
-            var simuManager = new Simulation_Runner(_simulationBuilder, simulationEnvironment.Parameters);
+            var simuManager = new SimuRunner(_simulationBuilder, simulationEnvironment.Parameters);
 
             // Run the simulations
             await simuManager.RunSimulationsAsync();

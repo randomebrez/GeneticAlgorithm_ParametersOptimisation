@@ -1,7 +1,9 @@
-﻿namespace GeneticAlgorithm.SimulationRun.Interfaces
+﻿namespace GeneticAlgorithm.ClientAccessibleObjects
 {
     public interface ISimulation
     {
+        Task InitializeAsync(Dictionary<string, SearchableParameter> searchableParameters);
+
         Task RunAsync();
 
         Task<Dictionary<string, string>> GetResultAsync();

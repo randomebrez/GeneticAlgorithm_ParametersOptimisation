@@ -1,5 +1,4 @@
-﻿using GeneticAlgorithm.SimulationRun.Interfaces;
-using GeneticAlgorithm.SimulationRun.Parameters_DTO;
+﻿using GeneticAlgorithm.ClientAccessibleObjects;
 using System.Text;
 
 namespace GeneticAlgorithm.Examples.TSP
@@ -21,7 +20,7 @@ namespace GeneticAlgorithm.Examples.TSP
         public List<double> PathLengthAverages { get; set; } = new List<double>();
     }
 
-    public class TSP_Simulation : SimulationBase
+    public class TSP_Simulation : ISimulation
     {
         private List<City> _cities;
         private CityGraph _graph;
@@ -34,10 +33,10 @@ namespace GeneticAlgorithm.Examples.TSP
         private AgentReport _minResult = new AgentReport();
         public List<IterationResult> GetRawResults => _iterationResults;
 
-        protected override Task InitializeAsync()
+        public Task InitializeAsync(Dictionary<string, SearchableParameter> searchableParameters)
         {
             // Map Parameters
-            _simulationParameters = new TSP_Parameters(_searchableParameters);
+            _simulationParameters = new TSP_Parameters(searchableParameters);
 
             // Create city map & graph
             _cities = GenerateCities(_simulationParameters.CityNumber, _simulationParameters.X_lim, _simulationParameters.Y_lim);
@@ -50,7 +49,7 @@ namespace GeneticAlgorithm.Examples.TSP
             return Task.CompletedTask;
         }
 
-        public override async Task RunAsync()
+        public async Task RunAsync()
         {
             var iterationNumber = 0;
             var stopCount = 0;
@@ -89,7 +88,7 @@ namespace GeneticAlgorithm.Examples.TSP
             _lastRun = lastAgent.PheromoneTrail();
         }
 
-        public override async Task<Dictionary<string, string>> GetResultAsync()
+        public async Task<Dictionary<string, string>> GetResultAsync()
         {
             var result = new Dictionary<string, string>();
             var cityResult = _graph.CitiesStorageFormatGet();
@@ -114,7 +113,7 @@ namespace GeneticAlgorithm.Examples.TSP
             return result;
         }
 
-        public override Task<double> EvaluateAsync()
+        public Task<double> EvaluateAsync()
         {
             var last_average_mean = 0d;
             var last_min_average = 0d;

@@ -1,24 +1,16 @@
-﻿using GeneticAlgorithm.Genomic;
+﻿using GeneticAlgorithm.ClientAccessibleObjects;
+using GeneticAlgorithm.Genomic;
 using GeneticAlgorithm.Genomic.Model;
-using GeneticAlgorithm.SimulationRun.Parameters_DTO;
+using GeneticAlgorithm.SimulationRun.Model;
 
 namespace GeneticAlgorithm.SimulationRun
 {
-    public class SimulationEnvironment
-    {
-        public int Id { get; set; }
-        public Genome Genome { get; set; }
-        public GlobalParameters Parameters { get; set; }
-
-        public double Score { get; set; }
-    }
-
-    public class SimulationParameters_Manager
+    public class SimuParamManager
     {
         private GenomeManager _genomeManager = new();
         private GlobalParameters _globalParameters;
 
-        public SimulationParameters_Manager(GlobalParameters parameters)
+        public SimuParamManager(GlobalParameters parameters)
         {
             _globalParameters = parameters;
         }
@@ -75,7 +67,7 @@ namespace GeneticAlgorithm.SimulationRun
 
         private (bool Required, List<SearchableParameter> ParametersToExplore) IsGenomeNeeded()
         {
-            var parametersToExplore = _globalParameters.SimulationParameters.Where(t => t.Search);
+            var parametersToExplore = _globalParameters.SimulationParametersList.Where(t => t.Search);
             return (parametersToExplore.Any(), parametersToExplore.ToList());
         }
 
@@ -84,7 +76,7 @@ namespace GeneticAlgorithm.SimulationRun
             var translatedGenome = _genomeManager.TranslateGenome(genome);
 
             var distinctParameters = _globalParameters.Copy();
-            foreach(var parameter in distinctParameters.SimulationParameters)
+            foreach(var parameter in distinctParameters.SimulationParametersList)
             {
                 if (parameter.Search == false)
                     continue;
