@@ -76,7 +76,7 @@ namespace GeneticAlgorithm.SimulationRun
             var translatedGenome = _genomeManager.TranslateGenome(genome);
 
             var distinctParameters = _globalParameters.Copy();
-            foreach(var parameter in distinctParameters.SimulationParametersList)
+            foreach (var parameter in distinctParameters.SimulationParametersList)
             {
                 if (parameter.Search == false)
                     continue;

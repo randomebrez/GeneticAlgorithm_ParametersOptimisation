@@ -13,7 +13,7 @@ namespace GeneticAlgorithm.SimulationRun
 
         private double _score;
 
-        public SimuRunner(ISimulationBuilder builder, GlobalParameters parameters) 
+        public SimuRunner(ISimulationBuilder builder, GlobalParameters parameters)
         {
             _simulationBuilder = builder;
             _parameters = parameters;
@@ -52,7 +52,7 @@ namespace GeneticAlgorithm.SimulationRun
                         stream.Write(bytes, 0, bytes.Length);
                         stream.Flush();
                     }
-                    
+
                 }
             }
 
@@ -79,7 +79,7 @@ namespace GeneticAlgorithm.SimulationRun
         public string GetStringResult()
         {
             var text = new StringBuilder($"Score {_score}\n");
-            foreach(var parameter in _parameters.SimulationParametersList.Where(t => t.Search))
+            foreach (var parameter in _parameters.SimulationParametersList.Where(t => t.Search))
                 text.Append($"{parameter.Name} : {parameter.Value} - ");
 
             return text.ToString();

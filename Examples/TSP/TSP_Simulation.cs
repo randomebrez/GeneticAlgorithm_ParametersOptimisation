@@ -53,7 +53,7 @@ namespace GeneticAlgorithm.Examples.TSP
         {
             var iterationNumber = 0;
             var stopCount = 0;
-            while(iterationNumber < _simulationParameters.IterationNumber && stopCount < _simulationParameters.StopInARaw)
+            while (iterationNumber < _simulationParameters.IterationNumber && stopCount < _simulationParameters.StopInARaw)
             {
                 var simulationResult = new IterationResult { IterationId = iterationNumber + 1 };
                 await RunAgentsAsync();
@@ -161,7 +161,7 @@ namespace GeneticAlgorithm.Examples.TSP
 
             if (agentReport.TotalLength > result.MaxLength)
                 result.MaxLength = agentReport.TotalLength;
-            
+
             // Store simulation global result
             if (agentReport.TotalLength < _simulationResult.MinLength)
                 _simulationResult.MinLength = agentReport.TotalLength;

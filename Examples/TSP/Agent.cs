@@ -141,13 +141,13 @@ namespace GeneticAlgorithm.Examples.TSP
                 }
             }
             return toVisit[index];
-        }        
+        }
 
         public City DrawMaxPheromoneDensity(City currentPosition, List<City> toVisit)
         {
             var max = _graph.GetPheromoneBetween(currentPosition, toVisit[0]);
             City nextPosition = toVisit[0];
-            foreach(var city in toVisit)
+            foreach (var city in toVisit)
             {
                 var p_density = _graph.GetPheromoneBetween(currentPosition, city);
                 if (p_density > max)

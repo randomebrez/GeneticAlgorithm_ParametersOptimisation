@@ -63,7 +63,7 @@ namespace GeneticAlgorithm.Examples.TSP
         {
             var path = agent.GetResult.Path;
             var firstCity = path.First();
-            for(int i = 0; i < path.Count - 1; i++)
+            for (int i = 0; i < path.Count - 1; i++)
             {
                 var otherCity = path[i + 1];
                 var edgeName_1 = EdgeNameGet(firstCity, otherCity);
