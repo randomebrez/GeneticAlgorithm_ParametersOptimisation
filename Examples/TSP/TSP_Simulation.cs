@@ -4,20 +4,6 @@ using System.Text;
 
 namespace GeneticAlgorithm.Examples.TSP
 {
-    public class TSP_Simulation : ISimulationBuilder
-    {
-        private TSP_Parameters _simulationParameters;
-        public ISimulation GetInstance()
-        {
-            return new Simulation(_simulationParameters);
-        }
-
-        public void Initialize(List<SearchableParameter> searchableParameters)
-        {
-            _simulationParameters = new TSP_Parameters(searchableParameters);
-        }
-    }
-
     public struct IterationResult
     {
         public int IterationId { get; set; }
@@ -35,7 +21,7 @@ namespace GeneticAlgorithm.Examples.TSP
         public List<double> PathLengthAverages { get; set; } = new List<double>();
     }
 
-    public class Simulation : ISimulation
+    public class TSP_Simulation : SimulationBase
     {
         private List<City> _cities;
         private CityGraph _graph;
@@ -48,21 +34,23 @@ namespace GeneticAlgorithm.Examples.TSP
         private AgentReport _minResult = new AgentReport();
         public List<IterationResult> GetRawResults => _iterationResults;
 
-
-        public Simulation(TSP_Parameters simulationParameters)
+        protected override Task InitializeAsync()
         {
-            _simulationParameters = simulationParameters;
+            // Map Parameters
+            _simulationParameters = new TSP_Parameters(_searchableParameters);
 
-            _cities = GenerateCities(simulationParameters.CityNumber, simulationParameters.X_lim, simulationParameters.Y_lim);
+            // Create city map & graph
+            _cities = GenerateCities(_simulationParameters.CityNumber, _simulationParameters.X_lim, _simulationParameters.Y_lim);
             _graph = new CityGraph(_cities);
 
-            _graphValues = new StringBuilder();
-            _graphValues.AppendLine(_graph.EdgeHeaderGet());
-
+            // Storing stuffs
             _agents = new List<Agent>();
+            _graphValues = new StringBuilder($"{_graph.EdgeHeaderGet()}\n");
+
+            return Task.CompletedTask;
         }
 
-        public async Task RunAsync()
+        public override async Task RunAsync()
         {
             var iterationNumber = 0;
             var stopCount = 0;
@@ -101,21 +89,7 @@ namespace GeneticAlgorithm.Examples.TSP
             _lastRun = lastAgent.PheromoneTrail();
         }
 
-        private async Task RunAgentsAsync()
-        {
-            _agents = new List<Agent>();
-            List<Task> tasks = new List<Task>();
-            for (int i = 0; i < _simulationParameters.AgentNumber; i++)
-            {
-                var agent = new Agent(_graph, _simulationParameters);
-                _agents.Add(agent);
-                tasks.Add(agent.FindAWayAsync());
-            }
-
-            await Task.WhenAll(tasks);
-        }
-
-        public async Task<Dictionary<string, string>> GetResultAsync()
+        public override async Task<Dictionary<string, string>> GetResultAsync()
         {
             var result = new Dictionary<string, string>();
             var cityResult = _graph.CitiesStorageFormatGet();
@@ -140,7 +114,7 @@ namespace GeneticAlgorithm.Examples.TSP
             return result;
         }
 
-        public Task<double> EvaluateAsync()
+        public override Task<double> EvaluateAsync()
         {
             var last_average_mean = 0d;
             var last_min_average = 0d;
@@ -161,6 +135,44 @@ namespace GeneticAlgorithm.Examples.TSP
             // The smaller the better
             var percentage = (last_average_mean - last_min_average) / (last_max_average - last_min_average);
             return Task.FromResult(100d / (percentage + 0.01f));
+        }
+
+
+
+        private async Task RunAgentsAsync()
+        {
+            _agents = new List<Agent>();
+            List<Task> tasks = new List<Task>();
+            for (int i = 0; i < _simulationParameters.AgentNumber; i++)
+            {
+                var agent = new Agent(_graph, _simulationParameters);
+                _agents.Add(agent);
+                tasks.Add(agent.FindAWayAsync());
+            }
+
+            await Task.WhenAll(tasks);
+        }
+        private IterationResult StoreAgentTry(IterationResult result, AgentReport agentReport)
+        {
+            // Store iteration results
+            result.PathLengthAverage += agentReport.TotalLength;
+
+            if (result.MinLength == 0 || agentReport.TotalLength < result.MinLength)
+                result.MinLength = agentReport.TotalLength;
+
+            if (agentReport.TotalLength > result.MaxLength)
+                result.MaxLength = agentReport.TotalLength;
+            
+            // Store simulation global result
+            if (agentReport.TotalLength < _simulationResult.MinLength)
+                _simulationResult.MinLength = agentReport.TotalLength;
+            if (agentReport.TotalLength > _simulationResult.MaxLength)
+                _simulationResult.MaxLength = agentReport.TotalLength;
+
+            if (_minResult.TotalLength == 0 || agentReport.TotalLength < _minResult.TotalLength)
+                _minResult = agentReport;
+
+            return result;
         }
 
         private bool StopConditionCheck()
@@ -193,30 +205,6 @@ namespace GeneticAlgorithm.Examples.TSP
 
             return condition_1; // && condition_2;
         }
-
-        private IterationResult StoreAgentTry(IterationResult result, AgentReport agentReport)
-        {
-            // Store iteration results
-            result.PathLengthAverage += agentReport.TotalLength;
-
-            if (result.MinLength == 0 || agentReport.TotalLength < result.MinLength)
-                result.MinLength = agentReport.TotalLength;
-
-            if (agentReport.TotalLength > result.MaxLength)
-                result.MaxLength = agentReport.TotalLength;
-            
-            // Store simulation global result
-            if (agentReport.TotalLength < _simulationResult.MinLength)
-                _simulationResult.MinLength = agentReport.TotalLength;
-            if (agentReport.TotalLength > _simulationResult.MaxLength)
-                _simulationResult.MaxLength = agentReport.TotalLength;
-
-            if (_minResult.TotalLength == 0 || agentReport.TotalLength < _minResult.TotalLength)
-                _minResult = agentReport;
-
-            return result;
-        }
-
         private List<City> GenerateCities(int number, double x_lim, double y_lim)
         {
             var cities = new List<City>();

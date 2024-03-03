@@ -4,18 +4,19 @@ using Newtonsoft.Json;
 
 namespace GeneticAlgorithm.SimulationRun
 {
-    public class GeneticExplorationManager
+    public class GeneticExplorationManager<T> where T : SimulationBase, new()
     {
         private GlobalParameters _globalParameters;
         private SimulationParameters_Manager _parametersManager;
-        private ISimulationBuilder _simulationBuilder;
+        private SimulationBuilder<T> _simulationBuilder;
         private List<SimulationEnvironment> _simulationEnvironments = new List<SimulationEnvironment>();
         private (double score, string config) _bestGenomeEver = (0d, string.Empty);
 
 
-        public async Task ExploreSimulationAsync(ISimulationBuilder simulationBuilder, string configFilePath)
+        public async Task ExploreSimulationAsync(string configFilePath)
         {
-            _simulationBuilder = simulationBuilder;
+
+            _simulationBuilder = new SimulationBuilder<T>();
 
             // Map config file
             _globalParameters = ReadConfigFile(configFilePath);

@@ -7,18 +7,16 @@ namespace GeneticAlgorithm.SimulationRun
 {
     public class Simulation_Runner
     {
+        private ISimulationBuilder _simulationBuilder;
         private GlobalParameters _parameters;
-        private ISimulationBuilder _builder;
         private List<ISimulation> _simulations;
 
         private double _score;
 
-        public Simulation_Runner(ISimulationBuilder builder, GlobalParameters parameters)
+        public Simulation_Runner(ISimulationBuilder builder, GlobalParameters parameters) 
         {
+            _simulationBuilder = builder;
             _parameters = parameters;
-            _builder = builder;
-
-            _builder.Initialize(_parameters.SimulationParameters);
 
             _simulations = new List<ISimulation>();
         }
@@ -28,7 +26,7 @@ namespace GeneticAlgorithm.SimulationRun
             List<Task> tasks = new List<Task>();
             for (int i = 0; i < _parameters.SimulationNumberByParameters; i++)
             {
-                var simu = _builder.GetInstance();
+                var simu = _simulationBuilder.GetSimulationInstance(_parameters.SimulationParameters);
                 tasks.Add(simu.RunAsync());
                 _simulations.Add(simu);
             }
