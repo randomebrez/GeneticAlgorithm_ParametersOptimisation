@@ -6,25 +6,25 @@
         "ParentGenomeNumber": "10"
     },
     "SimulationNumberByParameters": "1",
-    "SimulationParameters": [
+    "SimulationParametersList": [
         {
             "BitNumber": "10",
-            "MaxValue": "3",
-            "MinValue": "1",
+            "MaxValue": "2.7",
+            "MinValue": "2.3",
             "Name": "AlphaCoefficient",
             "Search": "true",
             "Value": "1.5"
         },
         {
             "BitNumber": "10",
-            "MaxValue": "1.5",
-            "MinValue": "0.1",
+            "MaxValue": "2.2",
+            "MinValue": "1.2",
             "Name": "BetaCoefficient",
             "Search": "true"
         },
         {
             "BitNumber": "10",
-            "MaxValue": "0.5",
+            "MaxValue": "0.15",
             "MinValue": "0.01",
             "Name": "EvaporationRate",
             "Search": "true"
@@ -54,10 +54,10 @@
         {
 			"BitNumber": "10",
             "Name": "AgentNumber",
-            "Search": "true",
+            "Search": "false",
             "MinValue": "50",
             "MaxValue": "300",
-            "Value": "150"
+            "Value": "300"
         },
         {
             "Name": "IterationNumber",

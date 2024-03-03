@@ -6,7 +6,7 @@
         "ParentGenomeNumber": 10
     },
     "SimulationNumberByParameters": 5,
-    "SimulationParameters": [
+    "SimulationParametersList": [
         {
             "BitNumber": 10,
             "MaxValue": 3.0,

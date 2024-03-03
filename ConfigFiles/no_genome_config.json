@@ -1,6 +1,6 @@
 {
     "SimulationNumberByParameters": "10",
-    "SimulationParameters": [
+    "SimulationParametersList": [
         {
             "Value": "2.5",
             "Name": "AlphaCoefficient",
@@ -12,7 +12,7 @@
             "Search": "false"
         },
         {
-			"Value": "0.08",
+            "Value": "0.08",
             "Name": "EvaporationRate",
             "Search": "false"
         },
