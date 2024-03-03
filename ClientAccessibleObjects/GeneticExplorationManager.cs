@@ -21,6 +21,9 @@ namespace GeneticAlgorithm.ClientAccessibleObjects
             // Map config file
             _globalParameters = ReadConfigFile(configFilePath);
 
+            if (Directory.Exists(_globalParameters.StoragePath) == false)
+                Directory.CreateDirectory(_globalParameters.StoragePath);
+
             // Initialize ParameterManager
             _parametersManager = new SimuParamManager(_globalParameters);
 
